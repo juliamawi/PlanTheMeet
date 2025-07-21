@@ -1,0 +1,16 @@
+.eventButtons{
+    width: 150px;
+    height: 20px;
+    margin: 5px;
+}
+
+.eventButtons:hover{
+    background-color: rgb(255, 217, 0);
+
+}
+
+/*removes the bullet dots*/
+ul{
+    list-style-type: none;
+}
+

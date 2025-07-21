@@ -1,0 +1,121 @@
+@font-face {
+  font-family: 'Minecraft';
+  src: url('./assets/Minecraft.ttf') format('truetype'); 
+  font-display: swap;
+}
+
+
+/*removes white border*/
+body {
+  margin:0;
+  font-family: 'Minecraft', monospace; /*global font*/
+}
+
+
+
+.login-background{
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('./assets/login.png');
+  background-size: cover;
+
+  background-position: center;
+  image-rendering: pixelated; /* keeps pixel crispness */
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.login-block{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: column;
+
+    width: 300px;
+    height: 600px;
+    
+    background-color: #f2fcff;
+    /* background-color: transparent; */
+    border-radius: 70px; /*round the edges*/
+}
+
+/*Plan the meet logo section*/
+.image-box{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  
+}
+.image-box img{
+    width: 150px;
+    height: 50px;
+    image-rendering: pixelated;
+}
+
+/* the three characters  section*/
+.logo-block {
+  margin-top: 20px;
+  margin-bottom: 60px;
+
+
+}
+
+.logo-block img{
+  width: 200px;
+  height: 100px;
+  image-rendering: pixelated;
+}
+
+
+
+/*box for the email and passwords*/
+.login{
+  display: flex;
+  flex-direction: column;
+}
+
+
+.login input{
+    background-color: #daf7fe;
+    border: transparent;
+    padding: 15px;
+    width: 200px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    
+}
+
+.login-submit{
+  background-color: rgb(0, 0, 0);
+  border:transparent;
+  border-radius: 6px;
+  height: 50px;
+  
+  cursor: pointer;
+}
+
+.login-submit{
+  font-family: 'Minecraft', monospace; /*global font*/
+  color:white;
+}
+
+.SignUp{
+  color:black;
+  display: flex;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  margin-top: 20px;
+  margin-bottom: 60px; /*so that the logins can be towards the bottom*/
+}
+
+.SignUp:hover{
+  color:#051094;
+}

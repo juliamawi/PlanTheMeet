@@ -1,0 +1,105 @@
+/* ---------- page background ---------- */
+body{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;         
+  margin:0;
+
+  background:url('./assets/pixalbackground.png') center/cover no-repeat;
+  image-rendering:pixelated;
+}
+
+/* ---------- outer form ---------- */
+.event{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:24px;                 /* equal vertical spacing between blocks */
+  color:#fff;
+  margin-bottom: 200px; /*scooch it up more*/
+}
+
+.eventName{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+/* ---------- shared field styles ---------- */
+.event label{                /* every <label> */
+  margin-bottom:6px;
+}
+.event input,
+.event textarea{
+  border:2px solid #929191;
+  border-radius:6px;
+  padding:4px 6px;
+  font-family:inherit;
+}
+
+/* ---------- single‑line text field ---------- */
+.event input{
+  width:280px;
+  height:34px;
+}
+
+/* ---------- two‑column blocks (dates & times) ---------- */
+.date,
+.time{
+  display:grid;
+  grid-template-columns:repeat(2, auto);
+  column-gap:32px;          /* space between the two columns */
+}
+
+/* each half‑column */
+.start, .end, .first, .second{
+  display:flex;
+  flex-direction:column;
+}
+
+/* date & time inputs */
+.date input,
+.time input{
+  width:140px;
+  height:34px;
+}
+
+/* ---------- invitee textarea ---------- */
+.invitees-block{
+  display:flex;
+  flex-direction:column;
+  align-items:center;       /* label and textarea centered */
+}
+.invitees-block textarea{
+  width:280px;
+  height:70px;
+  resize:vertical;
+}
+
+/* ---------- pixel‑button ---------- */
+.create-button{
+  background:none;
+  border:none;
+  padding:0;
+  cursor:pointer;
+}
+.create-button img{
+  width:220px;
+  image-rendering:pixelated;
+}
+
+.home-button{
+  top: 10px;
+  left: 50px;
+  position: absolute;
+  background:none;
+  border:none;
+  padding:0;
+  cursor:pointer;
+}
+
+.home-button img{
+  width:150px;
+  image-rendering:pixelated;
+}
