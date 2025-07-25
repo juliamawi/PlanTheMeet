@@ -3,36 +3,42 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
-
 import homeEventDefault from './assets/home1.png';
 import homeEventClicked from './assets/home2.png';
 
-
 function JoinEvent() {
-    const [events, setEvents] = useState([]);
-    const navigate = useNavigate();
-    const [homePressed, setHomePressed] = useState(false);
-    
-    let userEmail = '';
-    try {
-      const token = localStorage.getItem('token');
+  const [events, setEvents] = useState([]);
+  const navigate = useNavigate();
+  const [homePressed, setHomePressed] = useState(false);
+
+  let userEmail = '';
+  try {
+    const token = localStorage.getItem('token');
+    if (token) {
       const decoded = jwtDecode(token);
       userEmail = decoded.email;
-    } catch (e) {
-      console.error('❌ Failed to decode token in JoinEvent:', e);
     }
-  
+  } catch (e) {
+    console.error('❌ Failed to decode token in JoinEvent:', e);
+  }
 
   useEffect(() => {
-    axios.get('http://localhost:8080/getAllEvents').then((res) => {
-      const allEvents = res.data;
-      const invitedEvents = allEvents.filter((event) => {
-        const invitees = event.invitees ? event.invitees.split(',') : [];
-        return invitees.includes(userEmail) || event.creator_email === userEmail;
+    if (!userEmail) return; // Don't fetch if email is empty
+
+    axios
+      .get(`${import.meta.env.VITE_API_BASE_URL}/getAllEvents`)
+      .then((res) => {
+        const allEvents = res.data;
+        const invitedEvents = allEvents.filter((event) => {
+          const invitees = (event.invitees || '').split(',').map(email => email.trim());
+          return invitees.includes(userEmail) || event.creator_email === userEmail;
+        });
+        setEvents(invitedEvents);
+      })
+      .catch((err) => {
+        console.error('Error fetching events:', err);
       });
-      setEvents(invitedEvents);
-    });
-  }, []);
+  }, [userEmail]);
 
   return (
     <div>
@@ -46,42 +52,33 @@ function JoinEvent() {
         }}
         onMouseLeave={() => setHomePressed(false)}
       >
-        <img
-          src={homePressed ? homeEventClicked : homeEventDefault}
-          alt="Go Home"
-        />
+        <img src={homePressed ? homeEventClicked : homeEventDefault} alt="Go Home" />
       </button>
-      
+
       <div className="join-event-page">
-      
-      <h2>Events You're Invited To</h2>
-      <p>Please click on an event below to join:</p>
-      <ul>
-        {events.map((event) => (
-          <li key={event.id}>
-            <button className='eventButtons'
-            onClick={() =>
-                navigate('/eventPage', {
-                state: {
-                    name: event.name,
-                    user_email: userEmail,
-                },
-                })
-            }
-            >
-            {event.name}
-            </button>
-
-          </li>
-        ))}
-      </ul>
+        <h2>Events You're Invited To</h2>
+        <p>Please click on an event below to join:</p>
+        <ul>
+          {events.map((event) => (
+            <li key={event.id}>
+              <button
+                className="eventButtons"
+                onClick={() =>
+                  navigate('/eventPage', {
+                    state: {
+                      name: event.name,
+                      user_email: userEmail,
+                    },
+                  })
+                }
+              >
+                {event.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
-
-
-
-
-    </div>
-    
   );
 }
 

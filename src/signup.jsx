@@ -4,17 +4,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from './assets/logo.png';
 
-
 function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmpassword, setConfirmPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  const navigate = useNavigate(); // initialize navigation
+  const navigate = useNavigate();
 
   const submitHandler = (e) => {
-    e.preventDefault(); // prevent form default submit behavior
+    e.preventDefault();
 
     if (password !== confirmpassword) {
       setErrorMsg("Passwords do not match.");
@@ -22,45 +21,38 @@ function Signup() {
     } else {
       setErrorMsg('');
     }
-    
-  
-    axios.post('http://localhost:8080/processsignup', { email, password })
+
+    axios
+      .post(`${import.meta.env.VITE_API_BASE_URL}/processsignup`, { email, password })
       .then((response) => {
-        if (response.status === 201){
+        if (response.status === 201) {
           console.log('Signup successful', response.data);
           setEmail('');
           setPassword('');
+          setConfirmPassword('');
           navigate('/');
-
         }
-        
       })
       .catch((error) => {
         if (error.response && error.response.status === 409) {
           console.log('User already exists:', error.response.data);
+          setErrorMsg('User already exists. Please log in.');
         } else {
           console.error('Signup error:', error);
+          setErrorMsg('Signup failed. Please try again.');
         }
       });
   };
 
-
   return (
     <div className="signup-page">
       <div className="signup-block">
-      {/* <div style={{ fontSize: '30px', fontWeight: 'bold',color: 'rgb(0, 0, 0)' }}>
-        Sign Up
-      </div> */}
-
         <div className="logo-block2">
-                            
-            <img src={logo} alt="three characters" />
-            
+          <img src={logo} alt="three characters" />
         </div>
 
         <form onSubmit={submitHandler} className="signup">
-
-          <label htmlFor='email'>Email</label>
+          <label htmlFor="email">Email</label>
           <input
             id="email"
             type="text"
@@ -70,7 +62,7 @@ function Signup() {
             required
           />
 
-          <label htmlFor='password'>Password</label>
+          <label htmlFor="password">Password</label>
           <input
             id="password"
             type="password"
@@ -80,22 +72,21 @@ function Signup() {
             required
           />
 
-          <label htmlFor='confirmpassword'>Confirm Password</label>
+          <label htmlFor="confirmpassword">Confirm Password</label>
           <input
             id="confirmpassword"
             type="password"
-            name="password"
+            name="confirmpassword"
             value={confirmpassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
 
           {errorMsg && <p className="error-message">{errorMsg}</p>}
+
           <button type="submit" className="signup-submit">
             Sign Up
           </button>
-          
-
         </form>
       </div>
     </div>

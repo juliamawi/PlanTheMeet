@@ -120,15 +120,14 @@ app.get('/getEventByName', async (req, res) => {
 
   try {
     const eventRes = await db.query('SELECT * FROM events WHERE name = $1', [name]);
-
     if (eventRes.rows.length === 0) {
       return res.status(404).json({ message: 'Event not found' });
     }
 
     const event = eventRes.rows[0];
 
+    // Get current user's availability
     const availRes = await db.query('SELECT * FROM availability WHERE event_name = $1', [name]);
-
     const availabilityMap = {};
     for (const row of availRes.rows) {
       if (row.user_email === user_email) {
@@ -138,6 +137,7 @@ app.get('/getEventByName', async (req, res) => {
     }
     event.availability = availabilityMap;
 
+    // Get group availability counts (already present)
     const groupAvailQuery = `
       SELECT date, time_slot,
         COUNT(CASE WHEN status = 'available' THEN 1 ELSE NULL END) AS available_count
@@ -145,16 +145,32 @@ app.get('/getEventByName', async (req, res) => {
       WHERE event_name = $1
       GROUP BY date, time_slot;
     `;
-
     const groupAvailRes = await db.query(groupAvailQuery, [name]);
-
     const groupAvailabilityMap = {};
     for (const row of groupAvailRes.rows) {
       const key = `${row.date}-${row.time_slot}`;
       groupAvailabilityMap[key] = parseInt(row.available_count, 10);
     }
-
     event.groupAvailability = groupAvailabilityMap;
+
+    // NEW: Get users available per date+time_slot
+    const usersAvailableQuery = `
+      SELECT date, time_slot, user_email
+      FROM availability
+      WHERE event_name = $1 AND status = 'available';
+    `;
+    const usersAvailableRes = await db.query(usersAvailableQuery, [name]);
+
+    const groupAvailabilityUsers = {};
+    for (const row of usersAvailableRes.rows) {
+      const key = `${row.date}-${row.time_slot}`;
+      if (!groupAvailabilityUsers[key]) {
+        groupAvailabilityUsers[key] = [];
+      }
+      groupAvailabilityUsers[key].push(row.user_email);
+    }
+    event.groupAvailabilityUsers = groupAvailabilityUsers;
+
     res.status(200).json(event);
   } catch (err) {
     res.status(500).json({ message: 'DB error', error: err.message });
